@@ -28,7 +28,7 @@ setup(
     author_email='ferry.boender@electricmonk.nl',
 
     package_dir={'': 'src'},
-    packages=find_namespace_packages('src'),
+    packages=find_packages('src'),
     package_data={
         'ansiblecmdb.data': ['*.*'],
         'ansiblecmdb.data.static.images': ['*.*'],
@@ -36,11 +36,11 @@ setup(
         'ansiblecmdb.data.tpl': ['*.*']
     },
     include_package_data=True,
+    py_modules=['ansible-cmdb', 'jsonxs']
     zip_safe=False,
     install_requires=['mako', 'pyyaml', 'ushlex', 'jsonxs'],
     scripts=[
         'src/ansible-cmdb',
-        'src/ansible-cmdb.py'
     ],
 
     classifiers=[
