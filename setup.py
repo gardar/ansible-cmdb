@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages
 
 def get_long_description():
     path = os.path.join(os.path.dirname(__file__), 'README.md')
@@ -28,7 +28,7 @@ setup(
     author_email='ferry.boender@electricmonk.nl',
 
     package_dir={'': 'src'},
-    packages=find_namespace_packages('src'),
+    packages=find_packages('src'),
     package_data={
         'ansiblecmdb.data': ['*.*'],
         'ansiblecmdb.data.static.images': ['*.*'],
