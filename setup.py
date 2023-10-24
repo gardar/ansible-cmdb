@@ -28,7 +28,7 @@ setup(
     author_email='ferry.boender@electricmonk.nl',
 
     package_dir={'': 'src'},
-    packages=find_packages('src'),
+    packages=find_namespace_packages('src'),
     package_data={
         'ansiblecmdb.data': ['*.*'],
         'ansiblecmdb.data.static.images': ['*.*'],
