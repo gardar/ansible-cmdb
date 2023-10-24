@@ -36,7 +36,7 @@ setup(
         'ansiblecmdb.data.tpl': ['*.*']
     },
     include_package_data=True,
-    py_modules=['ansible-cmdb', 'jsonxs']
+    py_modules=['ansible-cmdb', 'jsonxs'],
     zip_safe=False,
     install_requires=['mako', 'pyyaml', 'ushlex', 'jsonxs'],
     scripts=[
