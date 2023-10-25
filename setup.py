@@ -1,7 +1,15 @@
 #!/usr/bin/env python
 import os
 import sys
+import re
 from setuptools import setup, find_packages
+
+def get_data_files(path, strip='', prefix=''):
+    data_files = []
+    for dirpath, dirnames, filenames in os.walk(path):
+        files = [os.path.join(dirpath, filename) for filename in filenames]
+        data_files.append( [prefix + dirpath[len(strip):], files] )
+    return data_files
 
 def get_long_description():
     path = os.path.join(os.path.dirname(__file__), 'README.md')
@@ -29,13 +37,21 @@ setup(
 
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    package_data={
-        'ansiblecmdb.data': ['*.*'],
-        'ansiblecmdb.data.static.images': ['*.*'],
-        'ansiblecmdb.data.static.js': ['*.*'],
-        'ansiblecmdb.data.tpl': ['*.*']
-    },
+    #package_data={
+    #    'ansiblecmdb.data': ['*.*'],
+    #    'ansiblecmdb.data.static.images': ['*.*'],
+    #    'ansiblecmdb.data.static.js': ['*.*'],
+    #    'ansiblecmdb.data.tpl': ['*.*'],
+    #    '
+    #},
     include_package_data=True,
+    data_files=\
+        get_data_files(
+            'src/ansiblecmdb/data',
+            strip='src',
+            prefix='lib'
+        ) +
+        [['lib/ansiblecmdb/', ['src/ansible-cmdb.py']]],
     py_modules=['ansible-cmdb', 'jsonxs'],
     zip_safe=False,
     install_requires=['mako', 'pyyaml', 'ushlex', 'jsonxs'],
