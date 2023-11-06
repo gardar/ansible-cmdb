@@ -122,6 +122,31 @@ def get_cust_cols(path):
     return cust_cols
 
 
+def get_cust_sections(path):
+    """
+    Load custom section definitions.
+    """
+    required_keys = ["title", "id", "visible", "tpl"]
+
+    with open(path, 'r') as f:
+        try:
+            cust_sections = ast.literal_eval(f.read())
+        except Exception as err:
+            sys.stderr.write("Invalid custom sections file: {}\n".format(path))
+            sys.stderr.write("{}\n".format(err))
+            sys.exit(1)
+
+    # Validate
+    for section in cust_sections:
+        for required_key in required_keys:
+            if required_key not in section:
+                sys.stderr.write("Missing required key '{}' in custom "
+                                 "section {}\n".format(required_key, section))
+                sys.exit(1)
+
+    return cust_sections
+
+
 def parse_user_params(user_params):
     """
     Parse the user params (-p/--params) and them as a dict.
@@ -159,6 +184,7 @@ if __name__ == "__main__":
     parser.add_option("-C", "--cust-cols", dest="cust_cols", action="store", default=None, help="Path to a custom columns definition file")
     parser.add_option("-l", "--limit", dest="limit", action="store", default=None, help="Limit hosts to pattern")
     parser.add_option("--exclude-cols", dest="exclude_columns", action="store", default=None, help="Exclude cols from output")
+    parser.add_option('-S', '--custom-sections', dest='cust_sections', action="store", type=str, default=None, help="Path to custom sections definition file")
     (options, args) = parser.parse_args()
 
     if len(args) < 1:
@@ -177,6 +203,10 @@ if __name__ == "__main__":
     if options.cust_cols is not None:
         cust_cols = get_cust_cols(options.cust_cols)
 
+    cust_sections = []
+    if options.cust_sections is not None:
+        cust_sections = get_cust_sections(options.cust_sections)
+
     # Handle template params
     params = {
         'lib_dir': data_dir,  # Backwards compatibility for custom templates < ansible-cmdb v1.7
@@ -185,7 +215,8 @@ if __name__ == "__main__":
         'log': log,
         'columns': None,
         'exclude_columns': None,
-        'cust_cols': cust_cols
+        'cust_cols': cust_cols,
+        'cust_sections': cust_sections
     }
     params.update(parse_user_params(options.params))
     if options.columns is not None:

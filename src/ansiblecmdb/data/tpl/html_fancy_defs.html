@@ -349,6 +349,7 @@
         <% host_os(host, collapsed_class) %>
         <% host_network(host, collapsed_class) %>
         <% host_storage(host, collapsed_class) %>
+        <% host_custom_sections(host, collapsed_class) %>
       % endif
     </div>
   % endif
@@ -706,6 +707,18 @@
 ## Detailed host information blocks
 ##
 
+## Section functions
+<%def name="sect__cust_jsonxs(host, section, **kwargs)">
+  ## Render a custom section template
+  ${jsonxs(host, col["jsonxs"], r_list=r_list, r_dict=r_dict, default='')}
+</%def>
+
+<%def name="sect__cust_tpl(host, section, **kwargs)">
+  ## Render a custom section template
+  ${Template(section["tpl"]).render(host=host, r_list=r_list, r_dict=r_dict, jsonxs=jsonxs)}
+</%def>
+
+
 <%def name="host_general(host, collapsed_class)">
   <h4 class="toggle-collapse ${collapsed_class}">General</h4>
   <div class="collapsable ${collapsed_class}">
@@ -955,4 +968,21 @@
     </tr>
   </table>
   </div>
+</%def>
+
+<%def name="host_custom_sections(host, collapsed_class)">
+  % if cust_sections:
+    % for section in cust_sections:
+        <h4 class="toggle-collapse ${collapsed_class}">${section['title']}</h4>
+        <div class="collapsable ${collapsed_class}">
+            % if "func" in section:
+                ${sect["func"](host, **kwargs)}
+            % elif "jsonxs" in section:
+                ${sect__cust_jsonxs(host, section=section)}
+            % elif "tpl" in section:
+                ${sect__cust_tpl(host, section=section)}
+            % endif
+        </div>
+    % endfor
+  % endif
 </%def>
