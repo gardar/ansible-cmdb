@@ -298,8 +298,12 @@ class Ansible(object):
                 if 'ansible_facts' in x:
                     facts = x['ansible_facts']
                     prefixed_facts = {}
+                    prefixes = ['ansible_', 'facter_', 'ohai_']
                     for key, value in facts.items():
-                        new_key = key if key.startswith('ansible_') else 'ansible_' + key
+                        if any(key.startswith(prefix) for prefix in prefixes):
+                            new_key = key
+                        else:
+                            new_key = 'ansible_' + key
                         prefixed_facts[new_key] = value
                     x['ansible_facts'] = prefixed_facts
 
