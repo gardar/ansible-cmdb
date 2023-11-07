@@ -291,7 +291,8 @@ class Ansible(object):
                 x = json.loads(''.join(s))
                 # for compatibility with fact_caching=jsonfile
                 # which omits the "ansible_facts" parent key added by the setup module
-                if fact_cache:
+                root_keys = {'changed', 'unreachable', 'custom_facts', 'hostvars', 'groups'}
+                if fact_cache or ('ansible_facts' not in x and not root_keys.intersection(x)):
                     x = json.loads('{ "ansible_facts": ' + ''.join(s) + ' }')
 
                 # Check and ensure keys under 'ansible_facts' are prefixed with 'ansible_'
