@@ -293,6 +293,20 @@ class Ansible(object):
                 # which omits the "ansible_facts" parent key added by the setup module
                 if fact_cache:
                     x = json.loads('{ "ansible_facts": ' + ''.join(s) + ' }')
+
+                # Check and ensure keys under 'ansible_facts' are prefixed with 'ansible_'
+                if 'ansible_facts' in x:
+                    facts = x['ansible_facts']
+                    prefixed_facts = {}
+                    prefixes = ['ansible_', 'facter_', 'ohai_']
+                    for key, value in facts.items():
+                        if any(key.startswith(prefix) for prefix in prefixes):
+                            new_key = key
+                        else:
+                            new_key = 'ansible_' + key
+                        prefixed_facts[new_key] = value
+                    x['ansible_facts'] = prefixed_facts
+
                 self.update_host(hostname, x)
                 self.update_host(hostname, {'name': hostname})
             except ValueError as e:
